@@ -2,7 +2,7 @@
 * Template Name: BreezyCV - Resume / CV / vCard / Portfolio Template
 * Author: LMPixels
 * Author URL: http://themeforest.net/user/lmpixels
-* Version: 1.6.0
+* Version: 1.5.0
 */
 
 /* ------------------------------------------------------------
@@ -125,7 +125,7 @@ p {
   min-height: 80vh;
   margin: 10vh auto;
   padding: 0;
-  background-color: #04b4e0;
+  background-color:  #F1BE48;
   -webkit-box-shadow: 0 0 100px -5px rgba(0,0,0,.25);
   -moz-box-shadow: 0 0 100px -5px rgba(0,0,0,.25);
   box-shadow: 0 0 100px -5px rgba(0,0,0,.25);
@@ -151,7 +151,7 @@ input[type="submit"],
   line-height: 1.2;
   border: 0;
   outline: 0;
-  border: 2px solid #04b4e0;
+  border: 2px solid #C8102E;
   color: #222;
   text-shadow: none;
   background-color: #fff;
@@ -182,9 +182,9 @@ input[type="button"]:hover,
 input[type="button"]:focus,
 input[type="submit"]:hover,
 input[type="submit"]:focus {
-  background-color: #04b4e0;
+  background-color: #C8102E;
   color: #fff;
-  border: 2px solid #04b4e0;
+  border: 2px solid #C8102E;
 }
 
 .btn-secondary {
@@ -210,11 +210,11 @@ input[type="submit"]:focus {
 
 
 
-/* ============================================================================= 
+/* =============================================================================
 3. Page loadig animation
 ============================================================================= */
 .no-js .preloader,
-.no-js .preloader-portfolio { 
+.no-js .preloader-portfolio {
   display: none;
 }
 .preloader,
@@ -244,9 +244,9 @@ input[type="submit"]:focus {
   width: 52px;
   height: 52px;
   margin: 100px auto;
-  background-color: #04b4e0;
+  background-color: #C8102E;
 
-  border-radius: 100%;  
+  border-radius: 100%;
   -webkit-animation: sk-scaleout 1.0s infinite ease-in-out;
   animation: sk-scaleout 1.0s infinite ease-in-out;
 }
@@ -260,7 +260,7 @@ input[type="submit"]:focus {
 }
 
 @keyframes sk-scaleout {
-  0% { 
+  0% {
     -webkit-transform: scale(0);
     transform: scale(0);
   } 100% {
@@ -324,7 +324,7 @@ input[type="submit"]:focus {
   ul.main-menu a.active,
   ul.main-menu a:focus,
   ul.main-menu a:hover {
-    color: #04b4e0;
+    color: #C8102E;
   }
 
   ul.main-menu .menu-icon {
@@ -339,7 +339,7 @@ input[type="submit"]:focus {
     opacity: 0;
     color: #fff;
     padding: 2px 10px;
-    background-color: #04b4e0;
+    background-color: #C8102E;
     white-space: nowrap;
     right: 0;
     top: -50%;
@@ -392,7 +392,7 @@ input[type="submit"]:focus {
 }
 
 .lmpixels-arrows-nav div:hover {
-  color: #04b4e0;
+  color: #C8102E;
 }
 /* --- End LMPixels Arrow Nav --- */
 
@@ -431,15 +431,15 @@ input[type="submit"]:focus {
 .header-titles h2 {
   font-size: 36px;
   font-weight: 600;
-  color: #fff;
+  color: #C8102E;
   margin: 5px 0 7px;
   line-height: 1.2em;
-} 
+}
 
 .header-titles h4 {
   font-size: 18px;
   font-weight: 300;
-  color: #fff;
+  color: #C8102E;
   margin: 5px 0;
   line-height: 1.2em;
 }
@@ -459,7 +459,7 @@ input[type="submit"]:focus {
 }
 
 .social-links ul li a {
-  color: #fff;
+  color: #C8102E;
   border-radius: 20px;
   font-size: 18px;
   padding: 0;
@@ -483,13 +483,13 @@ input[type="submit"]:focus {
 
 .header-buttons .btn-primary {
   background-color: transparent;
-  color: #fff;
+  color: #C8102E;
   border-color: #fff;
 }
 
 .header-buttons .btn-primary:hover {
   background-color: #fff;
-  color: #04b4e0;
+  color: #C8102E;
   border-color: #fff;
 }
 
@@ -596,7 +596,7 @@ input[type="submit"]:focus {
 }
 
 .ps:hover>.ps__scrollbar-y-rail:hover>.ps__scrollbar-y {
-    background-color: #04b4e0;
+    background-color: #C8102E;
 }
 
 .ps>.ps__scrollbar-y-rail {
@@ -625,25 +625,10 @@ input[type="submit"]:focus {
 }
 
 .page-title h2 span {
-  color: #04b4e0;
+  color: #C8102E;
 }
 
-.page-title:after {
-  position: absolute;
-  opacity: 0.45;
-  top: 10px;
-  right: 0;
-  content: '';
-  height: 30px;
-  width: 50px;
-  background-image: -webkit-repeating-radial-gradient(center center, #04b4e0, #04b4e0 1px, transparent 0px, transparent 100%);
-  background-image: -moz-repeating-radial-gradient(center center, #04b4e0, #04b4e0 1px, transparent 0px, transparent 100%);
-  background-image: -ms-repeating-radial-gradient(center center, #04b4e0, #04b4e0 1px, transparent 0px, transparent 100%);
-  -webkit-background-size: 6px 6px;
-  -moz-background-size: 6px 6px;
-  background-size: 6px 6px;
-  z-index: 0;
-}
+
 
 
 /* Form controls */
@@ -699,7 +684,7 @@ textarea.form-control, textarea.form-control:focus {
   top: 0;
   opacity: 0;
   background: transparent;
-  border: 2px solid #04b4e0;
+  border: 2px solid #C8102E;
   border-right-width: 0;
   height: 100%;
   -webkit-transition: all 0.3s ease-in-out;
@@ -770,7 +755,7 @@ textarea.form-control, textarea.form-control:focus {
 }
 
 .form-group-with-icon.form-group-focus i {
-  color: #04b4e0;
+  color: #C8102E;
 }
 
 .form-group.form-group-w-checkbox {
@@ -824,7 +809,7 @@ textarea.form-control, textarea.form-control:focus {
 
 .form-group .form-control:focus ~ label,
 .form-group.form-group-focus .form-control ~ label {
-  color: #04b4e0;
+  color: #C8102E;
   top: -20px;
   left: 0;
   z-index: 1;
@@ -859,53 +844,37 @@ textarea.form-control, textarea.form-control:focus {
 }
 
 .block-title h3 span {
-  color: #04b4e0;
+  color: #C8102E;
 }
 
-.block-title:after {
-  position: absolute;
-  opacity: 0.45;
-  top: 10px;
-  right: 0;
-  content: '';
-  height: 20px;
-  width: 30px;
-  background-image: -webkit-repeating-radial-gradient(center center, #04b4e0, #04b4e0 1px, transparent 0px, transparent 100%);
-  background-image: -moz-repeating-radial-gradient(center center, #04b4e0, #04b4e0 1px, transparent 0px, transparent 100%);
-  background-image: -ms-repeating-radial-gradient(center center, #04b4e0, #04b4e0 1px, transparent 0px, transparent 100%);
-  -webkit-background-size: 6px 6px;
-  -moz-background-size: 6px 6px;
-  background-size: 6px 6px;
-  z-index: 0;
-}
 
 /* --- White Spaces --- */
 .white-space-10 {
-  padding-bottom: 10px; 
+  padding-bottom: 10px;
 }
 
 .white-space-20 {
-  padding-bottom: 20px; 
+  padding-bottom: 20px;
 }
 
 .white-space-30 {
-  padding-bottom: 30px; 
+  padding-bottom: 30px;
 }
 
 .white-space-40 {
-  padding-bottom: 40px; 
+  padding-bottom: 40px;
 }
 
 .white-space-50 {
-  padding-bottom: 50px; 
+  padding-bottom: 50px;
 }
 
 .white-space-60 {
-  padding-bottom: 60px; 
+  padding-bottom: 60px;
 }
 
 .white-space-70 {
-  padding-bottom: 70px; 
+  padding-bottom: 70px;
 }
 /* --- End White Spaces --- */
 
@@ -921,7 +890,7 @@ textarea.form-control, textarea.form-control:focus {
 }
 
 .info-list .title {
-  color: #04b4e0;
+  color: #C8102E;
   margin-right: 5px;
   font-weight: 600;
 }
@@ -949,7 +918,7 @@ textarea.form-control, textarea.form-control:focus {
 .info-block-w-icon i {
   position: relative;
   font-size: 42px;
-  color: #04b4e0;
+  color: #C8102E;
   opacity: .7;
 }
 /* --- End Info block with Icon --- */
@@ -978,7 +947,7 @@ textarea.form-control, textarea.form-control:focus {
 .lm-info-block i {
   position: relative;
   font-size: 33px;
-  color: #04b4e0;
+  color: #C8102E;
   z-index: 1;
 }
 
@@ -993,7 +962,7 @@ textarea.form-control, textarea.form-control:focus {
   font-weight: 400;
   display: block;
   margin: 10px 0;
-  color: #04b4e0;
+  color: #C8102E;
 }
 
 
@@ -1037,7 +1006,7 @@ textarea.form-control, textarea.form-control:focus {
   font-size: 30px;
   right: 0;
   top: 7px;
-  color: #04b4e0;
+  color: #C8102E;
   opacity: .5;
 }
 
@@ -1140,8 +1109,8 @@ textarea.form-control, textarea.form-control:focus {
 .testimonials.owl-carousel .owl-nav .owl-next:hover,
 .clients.owl-carousel .owl-nav .owl-prev:hover,
 .clients.owl-carousel .owl-nav .owl-next:hover {
-    background-color: #04b4e0;
-    border-color: #04b4e0;
+    background-color: #C8102E;
+    border-color: #C8102E;
     color: #fff;
 }
 /* --- End of Sliders Nav --- */
@@ -1202,7 +1171,7 @@ textarea.form-control, textarea.form-control:focus {
   position: absolute;
   margin-left: -8px;
   border-radius: 10px;
-  background-color: #04b4e0;
+  background-color: #C8102E;
   opacity: .25;
   z-index: 0;
 }
@@ -1217,7 +1186,7 @@ textarea.form-control, textarea.form-control:focus {
   margin-left: -4px;
   background-color: #fff;
   border-radius: 5px;
-  border: 2px solid #04b4e0;
+  border: 2px solid #C8102E;
   z-index: 1;
 }
 
@@ -1261,10 +1230,10 @@ textarea.form-control, textarea.form-control:focus {
   margin-bottom: 30px;
 }
 
-.skills-info.skills-second-style h4 { 
+.skills-info.skills-second-style h4 {
   font-size: 13px;
   line-height: 1.1em;
-  position: relative; 
+  position: relative;
   float: left;
   margin: 0 0 4px;
 }
@@ -1273,7 +1242,7 @@ textarea.form-control, textarea.form-control:focus {
   position: relative;
   display: inline-block;
   background-color: #fff;
-  border: 1px solid #04b4e0;
+  border: 1px solid #C8102E;
   -moz-border-radius: 8px;
   -webkit-border-radius: 8px;
   border-radius: 8px;
@@ -1288,7 +1257,7 @@ textarea.form-control, textarea.form-control:focus {
 .skills-second-style .skill-container:before {
   content: '';
   position: absolute;
-  background-color: #04b4e0;
+  background-color: #C8102E;
 }
 
 .skills-second-style .skill-value {
@@ -1301,7 +1270,7 @@ textarea.form-control, textarea.form-control:focus {
 }
 
 .skills-second-style .skill-percentage {
-  background-color: #04b4e0;
+  background-color: #C8102E;
   border: 2px solid #fff;
   -moz-border-radius: 9px;
   -webkit-border-radius: 9px;
@@ -1376,7 +1345,7 @@ textarea.form-control, textarea.form-control:focus {
 
 .knowledges li {;
   display: inline-block;
-  background-color: #04b4e0;
+  background-color: #C8102E;
   border-radius: 3px;
   color: #fff;
   padding: 1px 10px;
@@ -1458,21 +1427,12 @@ textarea.form-control, textarea.form-control:focus {
 }
 /* --- End of Contact Form --- */
 
-/* --- Google Map --- */
-.lmpixels-map {
+.map {
   width: 100%;
+  height: 140px;
   margin: 0 0 35px;
 }
 
-.lmpixels-map iframe {
-  height: 140px;
-  max-width: 100%;
-  width: 100%;
-  margin: 0;
-  line-height: 1;
-  border: none;
-}
-/* --- End of Google Map --- */
 
 /* --- Portfolio --- */
 .portfolio-filters {
@@ -1608,7 +1568,7 @@ textarea.form-control, textarea.form-control:focus {
   width: 30px;
   height: 30px;
   background-color: #fff;
-  color: #04b4e0;
+  color: #C8102E;
   text-align: center;
   line-height: 30px;
   -webkit-transition: all 0.3s ease-in-out;
@@ -1866,7 +1826,7 @@ textarea.form-control, textarea.form-control:focus {
 }
 
 .ajax-page-nav > div.nav-item a:hover {
-  background-color: #04b4e0;
+  background-color: #C8102E;
   color: #fff;
 }
 
@@ -1925,7 +1885,7 @@ textarea.form-control, textarea.form-control:focus {
 }
 
 .project-general-info .fa {
-  color: #04b4e0;
+  color: #C8102E;
   margin-right: 5px;
 }
 
@@ -1957,8 +1917,8 @@ textarea.form-control, textarea.form-control:focus {
 
 .share-buttons a:hover {
   color: #fff;
-  background-color: #04b4e0;
-  border-color: #04b4e0;
+  background-color: #C8102E;
+  border-color: #C8102E;
 }
 
 .share-buttons a:last-child {
@@ -2283,7 +2243,7 @@ blockquote {
     top: 0;
     right: 0;
     bottom: 0;
-    background-color: #04b4e0;
+    background-color: #C8102E;
     z-index: 99;
     padding: 30px 30px 10px 30px;
     text-align: center;
@@ -2383,7 +2343,7 @@ blockquote {
     height: 48px;
     line-height: 46px;
     text-align: center;
-    background-color: #04b4e0;
+    background-color: #C8102E;
     right: 10px;
     font-size: 19px;
     top: 10px;
@@ -2472,7 +2432,7 @@ blockquote {
     right: 10px;
     bottom: 10px;
     padding: 5px 0;
-    border: 2px solid #04b4e0;
+    border: 2px solid #C8102E;
   }
 
   .lmpixels-arrows-nav div {
@@ -2613,7 +2573,7 @@ blockquote {
 
 
 
-/* ============================================================================= 
+/* =============================================================================
 9. Pricing
 ============================================================================= */
 /* Pricing */
@@ -2663,7 +2623,7 @@ blockquote {
   content: '';
   height: 2px;
   margin-top: 0;
-  background-color: #04b4e0;
+  background-color: #C8102E;
   position: absolute;
   left: 0;
   bottom: -3px;
@@ -2737,7 +2697,7 @@ blockquote {
 
 
 
-/* ============================================================================= 
+/* =============================================================================
 10. Full Width Styles
 ============================================================================= */
 
@@ -2804,7 +2764,7 @@ blockquote {
     right: 10px;
     bottom: 10px;
     padding: 5px 0;
-    border: 2px solid #04b4e0;
+    border: 2px solid #C8102E;
   }
 }
 .home-page-first-style {
@@ -2813,7 +2773,7 @@ blockquote {
 
 
 
-/* ============================================================================= 
+/* =============================================================================
 11. Updates
 ============================================================================= */
 
@@ -2958,7 +2918,7 @@ blockquote {
 .fun-fact i {
   position: relative;
   font-size: 33px;
-  color: #04b4e0;
+  color: #C8102E;
   margin-bottom: 6px;
   width: 33px;
   height: 33px;
@@ -2969,7 +2929,7 @@ blockquote {
   font-weight: 400;
   display: block;
   margin: 10px 0;
-  color: #04b4e0;
+  color: #C8102E;
 }
 
 .fun-fact-block-value {
