@@ -10,7 +10,12 @@
     <meta name="keywords" content="all, about, Lewis, Callaway" />
     <meta name="author" content="Lewis Callaway" />
     <link rel="shortcut icon" href="favicon.ico">
-
+    <style>
+        /* Initially hide the body content */
+        body {
+            display: none;
+        }
+    </style>
     <link rel="stylesheet" href="css/reset.css" type="text/css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/bootstrap-grid.min.css" type="text/css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="css/animations.css" type="text/css" media="print" onload="this.media='all'">
@@ -78,7 +83,7 @@
                 </ul>
 
                 <div class="header-buttons">
-                    <a href="resumeMBA.pdf" class="btn btn-primary">Download Resume</a>
+                    <a href="resume.pdf" class="btn btn-primary">Download Resume</a>
                 </div>
 
                 <div class="copyrights">© 2024 Lewis Callaway All rights reserved.</div>
@@ -596,7 +601,12 @@
 
             </div>
         </div>
-
+        <script>
+            window.addEventListener('load', function() {
+                // When the page is fully loaded, display the body content
+                document.body.style.display = 'block';
+            });
+        </script>
         <script src="js/jquery.min.js" defer></script>
         <script src="js/modernizr.custom.js" defer></script>
         <script src="js/animating.js" defer></script>
