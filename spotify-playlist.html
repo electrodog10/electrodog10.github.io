@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trackline — text file to Spotify playlist</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#EDE6D6;
+    --paper-dark:#E1D7C0;
+    --ink:#1F1C16;
+    --ink-soft:#5B5647;
+    --moss:#4A6741;
+    --moss-dark:#33472D;
+    --rust:#B3552B;
+    --gold:#B4901F;
+    --line: rgba(31,28,22,0.18);
+    --line-strong: rgba(31,28,22,0.32);
+    --card: #F6F2E8;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 1px 1px, rgba(31,28,22,0.05) 1px, transparent 0);
+    background-size: 22px 22px;
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  ::selection{ background:var(--gold); color:var(--ink); }
+
+  .wrap{
+    max-width:720px;
+    margin:0 auto;
+    padding:48px 20px 100px;
+  }
+
+  /* ---- Header / ticket masthead ---- */
+  .masthead{
+    text-align:center;
+    margin-bottom:36px;
+  }
+  .masthead .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+  .masthead h1{
+    font-family:'Fraunces', serif;
+    font-weight:700;
+    font-size:clamp(38px, 7vw, 56px);
+    line-height:0.95;
+    margin:0 0 10px;
+    letter-spacing:-0.01em;
+  }
+  .masthead h1 em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--moss);
+  }
+  .masthead p{
+    font-size:15px;
+    color:var(--ink-soft);
+    max-width:440px;
+    margin:0 auto;
+    line-height:1.5;
+  }
+
+  /* ---- Ticket / stub card ---- */
+  .ticket{
+    background:var(--card);
+    border:1px solid var(--line-strong);
+    border-radius:2px;
+    box-shadow: 0 1px 0 rgba(31,28,22,0.04), 0 14px 30px -18px rgba(31,28,22,0.35);
+    position:relative;
+    margin-bottom:28px;
+  }
+  .stub-row{
+    display:flex;
+    align-items:center;
+    padding:20px 26px;
+    gap:16px;
+  }
+  .stub-num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    border:1px solid var(--line-strong);
+    border-radius:50%;
+    width:26px;height:26px;
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;
+  }
+  .stub-title{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    font-size:19px;
+    flex:1;
+  }
+  .stub-status{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  .stub-status.done{ color:var(--moss); }
+
+  .perf{
+    position:relative;
+    height:1px;
+    border-top:1px dashed var(--line-strong);
+    margin:0 26px;
+  }
+  .perf::before,.perf::after{
+    content:'';
+    position:absolute; top:-8px;
+    width:16px;height:16px;
+    background:var(--paper);
+    border-radius:50%;
+    border:1px solid var(--line-strong);
+  }
+  .perf::before{ left:-34px; }
+  .perf::after{ right:-34px; }
+
+  .stub-body{
+    padding:4px 26px 26px;
+  }
+  .stub-body.collapsed{ display:none; }
+
+  /* ---- form elements ---- */
+  label{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    margin-bottom:6px;
+  }
+  input[type=text], input[type=password], textarea, select{
+    width:100%;
+    font-family:'Inter', sans-serif;
+    font-size:14px;
+    padding:10px 12px;
+    border:1px solid var(--line-strong);
+    border-radius:3px;
+    background:#FFFDF8;
+    color:var(--ink);
+    margin-bottom:14px;
+  }
+  input:focus, textarea:focus, select:focus{
+    outline:2px solid var(--moss);
+    outline-offset:1px;
+  }
+  textarea{ min-height:110px; resize:vertical; font-family:'IBM Plex Mono', monospace; font-size:13px; }
+
+  .help{
+    font-size:12.5px;
+    color:var(--ink-soft);
+    line-height:1.5;
+    margin:-6px 0 16px;
+  }
+  .help code{
+    background:var(--paper-dark);
+    padding:1px 5px;
+    border-radius:3px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+  }
+  .redirect-box{
+    display:flex; gap:8px; align-items:center;
+    background:var(--paper-dark);
+    border:1px solid var(--line);
+    border-radius:3px;
+    padding:8px 10px;
+    margin-bottom:16px;
+  }
+  .redirect-box code{
+    flex:1;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    word-break:break-all;
+    background:none;
+  }
+
+  button{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    letter-spacing:.04em;
+    text-transform:uppercase;
+    border:1px solid var(--ink);
+    background:var(--ink);
+    color:var(--paper);
+    padding:11px 18px;
+    border-radius:3px;
+    cursor:pointer;
+    transition:transform .08s ease, background .15s ease;
+  }
+  button:hover:not(:disabled){ background:var(--moss-dark); border-color:var(--moss-dark); }
+  button:active:not(:disabled){ transform:translateY(1px); }
+  button:disabled{ opacity:.4; cursor:not-allowed; }
+  button.ghost{
+    background:transparent; color:var(--ink); border-color:var(--line-strong);
+  }
+  button.ghost:hover:not(:disabled){ background:var(--paper-dark); }
+  button.small{ padding:6px 10px; font-size:11px; }
+
+  .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+  /* ---- connect state ---- */
+  .connected-pill{
+    display:inline-flex; align-items:center; gap:8px;
+    background:var(--moss); color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    padding:6px 12px;
+    border-radius:20px;
+    margin-bottom:16px;
+  }
+  .connected-pill .dot{ width:6px;height:6px;border-radius:50%;background:var(--paper); }
+
+  /* ---- playlist choice ---- */
+  .choice-group{ display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+  .choice{
+    border:1px solid var(--line-strong);
+    border-radius:3px;
+    padding:10px 12px;
+    cursor:pointer;
+    background:#FFFDF8;
+    font-size:13.5px;
+  }
+  .choice.active{ border-color:var(--moss); box-shadow: 0 0 0 1px var(--moss); }
+  .choice .meta{ color:var(--ink-soft); font-size:11.5px; font-family:'IBM Plex Mono', monospace; }
+
+  /* ---- drop zone ---- */
+  .dropzone{
+    border:1.5px dashed var(--line-strong);
+    border-radius:4px;
+    padding:28px 16px;
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:13.5px;
+    cursor:pointer;
+    margin-bottom:12px;
+    background:repeating-linear-gradient(135deg, rgba(31,28,22,0.02) 0 8px, transparent 8px 16px);
+  }
+  .dropzone.drag{ border-color:var(--moss); color:var(--moss); background:rgba(74,103,65,0.06); }
+  .dropzone strong{ color:var(--ink); }
+
+  /* ---- track list (setlist) ---- */
+  .setlist{ border-top:1px solid var(--line); margin-top:6px; }
+  .track-row{
+    display:grid;
+    grid-template-columns:28px 1fr auto 24px;
+    gap:12px;
+    align-items:center;
+    padding:10px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .track-row .num{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+  }
+  .track-row .info .query{
+    font-size:11px; font-family:'IBM Plex Mono', monospace; color:var(--ink-soft);
+    margin-bottom:2px;
+  }
+  .track-row .info .match{ font-size:14px; }
+  .track-row .info .match .artist{ color:var(--ink-soft); }
+  .track-row .info .nomatch{ font-size:13px; color:var(--rust); font-style:italic; }
+  .track-row .status{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .track-row .status.found{ color:var(--moss); }
+  .track-row .status.miss{ color:var(--rust); }
+  .track-row input[type=checkbox]{ width:16px;height:16px; accent-color:var(--moss); }
+
+  .summary-bar{
+    display:flex; justify-content:space-between; align-items:center;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    padding:12px 0 4px;
+  }
+
+  .footer-note{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--ink-soft);
+    margin-top:36px;
+    line-height:1.6;
+  }
+
+  .toast{
+    position:fixed; bottom:22px; left:50%; transform:translateX(-50%);
+    background:var(--ink); color:var(--paper);
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12.5px;
+    padding:10px 18px;
+    border-radius:4px;
+    opacity:0; pointer-events:none;
+    transition:opacity .2s ease, transform .2s ease;
+    z-index:50;
+    max-width:80vw;
+    text-align:center;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(-4px); }
+  .toast.error{ background:var(--rust); }
+  .toast.success{ background:var(--moss-dark); }
+
+  .spinner{
+    display:inline-block; width:12px; height:12px;
+    border:2px solid var(--line-strong); border-top-color:var(--ink);
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+    vertical-align:middle;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  a{ color:var(--moss-dark); }
+
+  @media (max-width:480px){
+    .stub-row{ padding:16px; }
+    .stub-body{ padding:2px 16px 20px; }
+    .perf{ margin:0 16px; }
+    .perf::before{ left:-24px; } .perf::after{ right:-24px; }
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div class="masthead">
+    <div class="eyebrow">Track №01 — Side A</div>
+    <h1>Trace<em>line</em></h1>
+    <p>Drop in a text file of songs — one per line — and it builds or adds to a Spotify playlist for you.</p>
+  </div>
+
+  <!-- STEP 1: CONNECT -->
+  <div class="ticket">
+    <div class="stub-row">
+      <div class="stub-num">1</div>
+      <div class="stub-title">Connect Spotify</div>
+      <div class="stub-status" id="status-connect">pending</div>
+    </div>
+    <div class="perf"></div>
+    <div class="stub-body" id="body-connect">
+      <div id="connect-setup">
+        <p class="help">
+          This app talks to Spotify directly from your browser — nothing is sent to any other server.
+          Because of that, it needs your own free Spotify app credentials:
+        </p>
+        <p class="help">
+          1. Open the <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noopener">Spotify Developer Dashboard</a> and create an app (any name works).<br>
+          2. In its settings, add the exact Redirect URI below, then save.<br>
+          3. Copy the <strong>Client ID</strong> shown on the app page and paste it here.
+        </p>
+        <label>Redirect URI to register</label>
+        <div class="redirect-box">
+          <code id="redirect-uri-display"></code>
+          <button class="ghost small" id="copy-redirect">Copy</button>
+        </div>
+        <label for="client-id">Spotify Client ID</label>
+        <input type="text" id="client-id" placeholder="e.g. 8b7c2a...">
+        <div class="row">
+          <button id="connect-btn">Connect to Spotify →</button>
+        </div>
+      </div>
+      <div id="connect-done" style="display:none;">
+        <div class="connected-pill"><span class="dot"></span><span id="connected-name">Connected</span></div>
+        <div class="row"><button class="ghost small" id="disconnect-btn">Disconnect</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: PLAYLIST -->
+  <div class="ticket">
+    <div class="stub-row">
+      <div class="stub-num">2</div>
+      <div class="stub-title">Choose a playlist</div>
+      <div class="stub-status" id="status-playlist">pending</div>
+    </div>
+    <div class="perf"></div>
+    <div class="stub-body collapsed" id="body-playlist">
+      <div class="choice-group" id="playlist-choices"></div>
+      <label style="margin-top:4px;">Or create a new playlist</label>
+      <input type="text" id="new-playlist-name" placeholder="Name for a brand new playlist">
+      <div class="row"><button id="confirm-playlist-btn">Use this playlist →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 3: UPLOAD -->
+  <div class="ticket">
+    <div class="stub-row">
+      <div class="stub-num">3</div>
+      <div class="stub-title">Add your song list</div>
+      <div class="stub-status" id="status-upload">pending</div>
+    </div>
+    <div class="perf"></div>
+    <div class="stub-body collapsed" id="body-upload">
+      <p class="help">
+        One song per line. Either format works: <code>Artist - Song Title</code> or just a loose description —
+        it'll search Spotify for the closest match on each line.
+      </p>
+      <div class="dropzone" id="dropzone">
+        <div><strong>Drop a .txt file here</strong> or click to choose one</div>
+      </div>
+      <input type="file" id="file-input" accept=".txt" style="display:none;">
+      <label style="margin-top:6px;">…or paste the list directly</label>
+      <textarea id="paste-area" placeholder="The Beatles - Here Comes the Sun&#10;Fleetwood Mac - Dreams&#10;Bon Iver - Holocene"></textarea>
+      <div class="row"><button id="match-btn">Find these on Spotify →</button></div>
+    </div>
+  </div>
+
+  <!-- STEP 4: REVIEW & ADD -->
+  <div class="ticket">
+    <div class="stub-row">
+      <div class="stub-num">4</div>
+      <div class="stub-title">Review matches &amp; add</div>
+      <div class="stub-status" id="status-review">pending</div>
+    </div>
+    <div class="perf"></div>
+    <div class="stub-body collapsed" id="body-review">
+      <div class="summary-bar" id="match-summary"></div>
+      <div class="setlist" id="track-list"></div>
+      <div class="row" style="margin-top:16px;">
+        <button id="add-btn">Add selected to playlist →</button>
+        <span id="add-progress" class="help" style="margin:0;"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Runs entirely in your browser using the Spotify Web API.<br>
+    Your Client ID and tokens stay in this browser's local storage — never sent anywhere else.
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- config / storage ----------
+  const REDIRECT_URI = window.location.origin + window.location.pathname;
+  const SCOPES = "playlist-modify-public playlist-modify-private playlist-read-private";
+  const LS_CLIENT_ID = "trl_client_id";
+  const LS_VERIFIER = "trl_code_verifier";
+  const LS_TOKENS = "trl_tokens";
+
+  document.getElementById("redirect-uri-display").textContent = REDIRECT_URI;
+
+  // ---------- state ----------
+  let tokens = null;         // {access_token, refresh_token, expires_at}
+  let clientId = localStorage.getItem(LS_CLIENT_ID) || "";
+  let me = null;              // current user object
+  let chosenPlaylist = null;  // {id, name} or {id:null, name:"new name"} pending creation
+  let matchedTracks = [];     // [{line, query, track, uri, selected}]
+
+  const $ = (id) => document.getElementById(id);
+
+  function toast(msg, type){
+    const t = $("toast");
+    t.textContent = msg;
+    t.className = "toast show" + (type ? " " + type : "");
+    clearTimeout(t._timer);
+    t._timer = setTimeout(() => t.classList.remove("show"), 3200);
+  }
+
+  function setStep(name, statusText, done){
+    $("status-" + name).textContent = statusText;
+    $("status-" + name).classList.toggle("done", !!done);
+  }
+  function expand(name){ $("body-" + name).classList.remove("collapsed"); }
+
+  // ---------- PKCE helpers ----------
+  function randomVerifier(len){
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~";
+    const arr = crypto.getRandomValues(new Uint8Array(len));
+    let out = "";
+    for (let i = 0; i < len; i++) out += chars[arr[i] % chars.length];
+    return out;
+  }
+  async function challengeFromVerifier(verifier){
+    const data = new TextEncoder().encode(verifier);
+    const digest = await crypto.subtle.digest("SHA-256", data);
+    let str = "";
+    new Uint8Array(digest).forEach(b => str += String.fromCharCode(b));
+    return btoa(str).replace(/=/g, "").replace(/\+/g, "-").replace(/\//g, "_");
+  }
+
+  // ---------- token management ----------
+  function loadTokens(){
+    try {
+      const raw = localStorage.getItem(LS_TOKENS);
+      tokens = raw ? JSON.parse(raw) : null;
+    } catch(e){ tokens = null; }
+  }
+  function saveTokens(t){
+    tokens = t;
+    localStorage.setItem(LS_TOKENS, JSON.stringify(t));
+  }
+  function clearAuth(){
+    tokens = null; me = null;
+    localStorage.removeItem(LS_TOKENS);
+    localStorage.removeItem(LS_VERIFIER);
+  }
+
+  async function exchangeCodeForToken(code){
+    const verifier = localStorage.getItem(LS_VERIFIER);
+    const body = new URLSearchParams({
+      grant_type: "authorization_code",
+      code,
+      redirect_uri: REDIRECT_URI,
+      client_id: clientId,
+      code_verifier: verifier
+    });
+    const res = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body
+    });
+    if (!res.ok) throw new Error("Token exchange failed (" + res.status + ")");
+    const data = await res.json();
+    saveTokens({
+      access_token: data.access_token,
+      refresh_token: data.refresh_token,
+      expires_at: Date.now() + (data.expires_in * 1000)
+    });
+  }
+
+  async function refreshToken(){
+    if (!tokens || !tokens.refresh_token) throw new Error("No refresh token");
+    const body = new URLSearchParams({
+      grant_type: "refresh_token",
+      refresh_token: tokens.refresh_token,
+      client_id: clientId
+    });
+    const res = await fetch("https://accounts.spotify.com/api/token", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body
+    });
+    if (!res.ok) throw new Error("Token refresh failed");
+    const data = await res.json();
+    saveTokens({
+      access_token: data.access_token,
+      refresh_token: data.refresh_token || tokens.refresh_token,
+      expires_at: Date.now() + (data.expires_in * 1000)
+    });
+  }
+
+  async function getValidToken(){
+    if (!tokens) throw new Error("Not connected");
+    if (Date.now() > tokens.expires_at - 60000) await refreshToken();
+    return tokens.access_token;
+  }
+
+  async function api(path, options = {}){
+    const token = await getValidToken();
+    const res = await fetch("https://api.spotify.com/v1" + path, {
+      ...options,
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Content-Type": "application/json",
+        ...(options.headers || {})
+      }
+    });
+    if (res.status === 401){
+      await refreshToken();
+      return api(path, options);
+    }
+    if (res.status === 429){
+      const retry = parseInt(res.headers.get("Retry-After") || "1", 10);
+      await new Promise(r => setTimeout(r, (retry + 1) * 1000));
+      return api(path, options);
+    }
+    return res;
+  }
+
+  // ---------- auth flow ----------
+  $("client-id").value = clientId;
+  $("client-id").addEventListener("input", (e) => {
+    clientId = e.target.value.trim();
+    localStorage.setItem(LS_CLIENT_ID, clientId);
+  });
+
+  $("copy-redirect").addEventListener("click", () => {
+    navigator.clipboard.writeText(REDIRECT_URI).then(() => toast("Redirect URI copied", "success"));
+  });
+
+  $("connect-btn").addEventListener("click", async () => {
+    if (!clientId){ toast("Paste your Spotify Client ID first", "error"); return; }
+    const verifier = randomVerifier(64);
+    localStorage.setItem(LS_VERIFIER, verifier);
+    const challenge = await challengeFromVerifier(verifier);
+    const params = new URLSearchParams({
+      response_type: "code",
+      client_id: clientId,
+      scope: SCOPES,
+      code_challenge_method: "S256",
+      code_challenge: challenge,
+      redirect_uri: REDIRECT_URI
+    });
+    window.location.href = "https://accounts.spotify.com/authorize?" + params.toString();
+  });
+
+  $("disconnect-btn").addEventListener("click", () => {
+    clearAuth();
+    $("connect-setup").style.display = "";
+    $("connect-done").style.display = "none";
+    setStep("connect", "pending", false);
+    location.reload();
+  });
+
+  async function afterConnected(){
+    setStep("connect", "connected", true);
+    $("connect-setup").style.display = "none";
+    $("connect-done").style.display = "";
+    try {
+      const res = await api("/me");
+      me = await res.json();
+      $("connected-name").textContent = "Connected as " + (me.display_name || me.id);
+    } catch(e){
+      $("connected-name").textContent = "Connected";
+    }
+    expand("playlist");
+    setStep("playlist", "loading…", false);
+    await loadPlaylists();
+  }
+
+  // ---------- step 2: playlists ----------
+  async function loadPlaylists(){
+    let items = [];
+    let url = "/me/playlists?limit=50";
+    try {
+      while (url){
+        const res = await api(url);
+        const data = await res.json();
+        items = items.concat(data.items || []);
+        url = data.next ? data.next.replace("https://api.spotify.com/v1", "") : null;
+      }
+    } catch(e){
+      toast("Couldn't load playlists: " + e.message, "error");
+    }
+    const container = $("playlist-choices");
+    container.innerHTML = "";
+    if (items.length === 0){
+      container.innerHTML = '<div class="help" style="margin:0 0 8px;">No existing playlists found — create a new one below.</div>';
+    }
+    items.forEach(pl => {
+      const div = document.createElement("div");
+      div.className = "choice";
+      div.innerHTML = `<div>${escapeHtml(pl.name)}</div><div class="meta">${pl.tracks.total} tracks · ${pl.public ? "public" : "private"}</div>`;
+      div.addEventListener("click", () => {
+        document.querySelectorAll(".choice").forEach(c => c.classList.remove("active"));
+        div.classList.add("active");
+        $("new-playlist-name").value = "";
+        chosenPlaylist = { id: pl.id, name: pl.name, existing: true };
+      });
+      container.appendChild(div);
+    });
+    setStep("playlist", "ready", false);
+  }
+
+  $("new-playlist-name").addEventListener("input", () => {
+    if ($("new-playlist-name").value.trim()){
+      document.querySelectorAll(".choice").forEach(c => c.classList.remove("active"));
+      chosenPlaylist = { id: null, name: $("new-playlist-name").value.trim(), existing: false };
+    }
+  });
+
+  $("confirm-playlist-btn").addEventListener("click", async () => {
+    if (!chosenPlaylist){ toast("Pick a playlist or name a new one", "error"); return; }
+    if (!chosenPlaylist.existing){
+      $("confirm-playlist-btn").disabled = true;
+      $("confirm-playlist-btn").textContent = "Creating…";
+      try {
+        const res = await api("/users/" + me.id + "/playlists", {
+          method: "POST",
+          body: JSON.stringify({ name: chosenPlaylist.name, public: false, description: "Built with Traceline" })
+        });
+        if (!res.ok) throw new Error("Spotify rejected the playlist (" + res.status + ")");
+        const data = await res.json();
+        chosenPlaylist.id = data.id;
+        chosenPlaylist.existing = true;
+      } catch(e){
+        toast(e.message, "error");
+        $("confirm-playlist-btn").disabled = false;
+        $("confirm-playlist-btn").textContent = "Use this playlist →";
+        return;
+      }
+      $("confirm-playlist-btn").textContent = "Use this playlist →";
+      $("confirm-playlist-btn").disabled = false;
+    }
+    setStep("playlist", chosenPlaylist.name, true);
+    expand("upload");
+    setStep("upload", "pending", false);
+    toast("Playlist ready: " + chosenPlaylist.name, "success");
+  });
+
+  // ---------- step 3: file upload ----------
+  const dropzone = $("dropzone");
+  const fileInput = $("file-input");
+  dropzone.addEventListener("click", () => fileInput.click());
+  dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("drag"); });
+  dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag"));
+  dropzone.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropzone.classList.remove("drag");
+    if (e.dataTransfer.files.length) readFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener("change", (e) => {
+    if (e.target.files.length) readFile(e.target.files[0]);
+  });
+  function readFile(file){
+    const reader = new FileReader();
+    reader.onload = () => { $("paste-area").value = reader.result; toast(file.name + " loaded", "success"); };
+    reader.onerror = () => toast("Couldn't read that file", "error");
+    reader.readAsText(file);
+  }
+
+  $("match-btn").addEventListener("click", async () => {
+    const lines = $("paste-area").value.split("\n").map(l => l.trim()).filter(Boolean);
+    if (lines.length === 0){ toast("Add at least one song line first", "error"); return; }
+    setStep("upload", lines.length + " lines", true);
+    expand("review");
+    await matchTracks(lines);
+  });
+
+  // ---------- step 4: matching ----------
+  function buildQueries(line){
+    const queries = [];
+    if (line.includes(" - ")){
+      const idx = line.indexOf(" - ");
+      const left = line.slice(0, idx).trim();
+      const right = line.slice(idx + 3).trim();
+      queries.push(`track:${right} artist:${left}`);
+      queries.push(`${left} ${right}`);
+    } else {
+      queries.push(line);
+    }
+    return queries;
+  }
+
+  async function searchTrack(line){
+    const queries = buildQueries(line);
+    for (const q of queries){
+      try {
+        const res = await api("/search?type=track&limit=1&q=" + encodeURIComponent(q));
+        const data = await res.json();
+        const item = data.tracks && data.tracks.items && data.tracks.items[0];
+        if (item) return { query: q, track: item };
+      } catch(e){ /* try next query */ }
+    }
+    return { query: queries[0], track: null };
+  }
+
+  async function matchTracks(lines){
+    matchedTracks = lines.map(line => ({ line, query: "", track: null, selected: false, status: "pending" }));
+    renderTrackList();
+    setStep("review", "matching…", false);
+
+    const CONCURRENCY = 4;
+    let cursor = 0;
+    async function worker(){
+      while (cursor < matchedTracks.length){
+        const i = cursor++;
+        const entry = matchedTracks[i];
+        const result = await searchTrack(entry.line);
+        entry.query = result.query;
+        entry.track = result.track;
+        entry.selected = !!result.track;
+        entry.status = result.track ? "found" : "miss";
+        renderTrackRow(i);
+        updateSummary();
+      }
+    }
+    await Promise.all(Array.from({ length: CONCURRENCY }, worker));
+    setStep("review", "matched", true);
+    updateSummary();
+  }
+
+  function updateSummary(){
+    const found = matchedTracks.filter(t => t.status === "found").length;
+    const miss = matchedTracks.filter(t => t.status === "miss").length;
+    const pending = matchedTracks.filter(t => t.status === "pending").length;
+    $("match-summary").innerHTML =
+      `<span>${found} matched · ${miss} not found${pending ? " · " + pending + " searching…" : ""}</span>` +
+      `<span>${matchedTracks.filter(t => t.selected).length} selected</span>`;
+  }
+
+  function renderTrackList(){
+    const list = $("track-list");
+    list.innerHTML = "";
+    matchedTracks.forEach((_, i) => {
+      const row = document.createElement("div");
+      row.className = "track-row";
+      row.id = "track-row-" + i;
+      list.appendChild(row);
+      renderTrackRow(i);
+    });
+    updateSummary();
+  }
+
+  function renderTrackRow(i){
+    const entry = matchedTracks[i];
+    const row = $("track-row-" + i);
+    if (!row) return;
+    let infoHtml;
+    let statusHtml;
+    if (entry.status === "pending"){
+      infoHtml = `<div class="query">${escapeHtml(entry.line)}</div><div class="match">searching…</div>`;
+      statusHtml = `<span class="spinner"></span>`;
+    } else if (entry.status === "found"){
+      const t = entry.track;
+      infoHtml = `<div class="query">${escapeHtml(entry.line)}</div><div class="match">${escapeHtml(t.name)} <span class="artist">— ${escapeHtml(t.artists.map(a=>a.name).join(", "))}</span></div>`;
+      statusHtml = `<span class="status found">Found</span>`;
+    } else {
+      infoHtml = `<div class="query">${escapeHtml(entry.line)}</div><div class="nomatch">No confident match</div>`;
+      statusHtml = `<span class="status miss">Skip</span>`;
+    }
+    row.innerHTML = `
+      <div class="num">${String(i+1).padStart(2,"0")}</div>
+      <div class="info">${infoHtml}</div>
+      <div class="status">${statusHtml}</div>
+      <input type="checkbox" ${entry.selected ? "checked" : ""} ${entry.track ? "" : "disabled"}>
+    `;
+    const cb = row.querySelector("input[type=checkbox]");
+    cb.addEventListener("change", () => { entry.selected = cb.checked; updateSummary(); });
+  }
+
+  // ---------- add to playlist ----------
+  $("add-btn").addEventListener("click", async () => {
+    if (!chosenPlaylist || !chosenPlaylist.id){ toast("Choose a playlist first", "error"); return; }
+    const uris = matchedTracks.filter(t => t.selected && t.track).map(t => t.track.uri);
+    if (uris.length === 0){ toast("No matched tracks selected", "error"); return; }
+    $("add-btn").disabled = true;
+    const progress = $("add-progress");
+    try {
+      for (let i = 0; i < uris.length; i += 100){
+        const chunk = uris.slice(i, i + 100);
+        progress.textContent = `adding ${i + chunk.length} / ${uris.length}…`;
+        const res = await api("/playlists/" + chosenPlaylist.id + "/tracks", {
+          method: "POST",
+          body: JSON.stringify({ uris: chunk })
+        });
+        if (!res.ok){
+          const errBody = await res.json().catch(() => ({}));
+          throw new Error((errBody.error && errBody.error.message) || ("Failed to add tracks (" + res.status + ")"));
+        }
+      }
+      progress.textContent = `Added ${uris.length} track(s) to "${chosenPlaylist.name}".`;
+      toast("Playlist updated on Spotify", "success");
+    } catch(e){
+      toast(e.message, "error");
+    } finally {
+      $("add-btn").disabled = false;
+    }
+  });
+
+  // ---------- utils ----------
+  function escapeHtml(str){
+    return String(str).replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  // ---------- boot ----------
+  (async function boot(){
+    loadTokens();
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get("code");
+    const errParam = params.get("error");
+
+    if (errParam){
+      toast("Spotify authorization was declined", "error");
+      window.history.replaceState({}, "", REDIRECT_URI);
+    }
+
+    if (code){
+      window.history.replaceState({}, "", REDIRECT_URI);
+      try {
+        await exchangeCodeForToken(code);
+        toast("Connected to Spotify", "success");
+      } catch(e){
+        toast("Connection failed: " + e.message, "error");
+      }
+    }
+
+    if (tokens){
+      await afterConnected();
+    }
+  })();
+
+})();
+</script>
+</body>
+</html>
